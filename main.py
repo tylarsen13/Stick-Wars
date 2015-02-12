@@ -27,9 +27,34 @@ def initGame():
     mapWidthPix = mapWidth * mapBoxSize
     mapHeightPix = mapHeight * mapBoxSize
 
-    array = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-    print array[0][0]
-    print array[1][0]
+    # Build map array
+    global gameMap
+    gameMap = []
+    # i is an increment to reference the map1 list
+    i = 3
+    # Iterate through gameMap and fill it with the info from map1
+    for row in range(mapHeight):
+        gameMap.append([])
+        for column in range(mapWidth):
+            line = map1[i].split(".")
+            i += 1
+            for z in range(len(line)):
+                line[z] = line[z].rstrip("\n")
+            building, unit = None, None
+            terrain = line[0]
+            if len(line) > 1:
+                building = line[1]
+            if len(line) == 3:
+                unit = line[2]
+
+            gameMap[row].append({
+                "terrain" : terrain,
+                "building" : building,
+                "unit" : unit
+                })
+    # for a in gameMap:
+    #     for b in a:
+    #         print b
 
 
 def checkEvents():

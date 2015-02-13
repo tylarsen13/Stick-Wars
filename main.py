@@ -164,16 +164,35 @@ def draw():
     # Draw Grid
     for i in range(mapWidth):
         x = (mapBoxSize * i + mapBoxSize) - scrollOffsetX
-        pygame.draw.line(mainWindow, colors['black'], (x, ymin), (x, ymax))
+        pygame.draw.line(mainWindow, colors['black'], (x, ymin), (x, ymax), gridWidth)
     for i in range(mapHeight):
         y = (mapBoxSize * i + mapBoxSize) - scrollOffsetY
-        pygame.draw.line(mainWindow, colors['black'], (xmin, y), (xmax, y))
+        pygame.draw.line(mainWindow, colors['black'], (xmin, y), (xmax, y), gridWidth)
     # pygame.draw.circle(mainWindow, colors['black'], (300 + scrollOffsetX, 300 + scrollOffsetY), 100)
+    
+    # Draw Terrain
+    global gameMap
+    for i in range(mapHeight):
+        for j in range(mapWidth):
+            t = gameMap[i][j]["terrain"]
+            if t == "plain":
+                color = colors['lightGreen']
+            elif t == "sea":
+                color = colors['blue']
+            rectangle = pygame.Rect(0, 0, 0, 0)
+            x = (mapBoxSize * j + mapBoxSize) - scrollOffsetX
+            y = (mapBoxSize * i + mapBoxSize) - scrollOffsetY
+            x -= (mapBoxSize / 2)
+            y -= (mapBoxSize / 2)
+            rectangle.width = mapBoxSize - gridWidth
+            rectangle.height = mapBoxSize - gridWidth
+            rectangle.center = (x, y)
+            pygame.draw.rect(mainWindow, color, rectangle)
+
     # Test image drawing
     image = pygame.image.load("graphics/infantry.png").convert_alpha()
     image = pygame.transform.scale(image, (mapBoxSize, mapBoxSize))
     mainWindow.blit(image, (xmin, ymin))
-
 
 
 

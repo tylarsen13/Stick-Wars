@@ -5,7 +5,7 @@ size = (800, 450)
 black = (0, 0, 0)
 scrollFactor = 20
 gridWidth = 5
-
+# Thanks to Micheal Erickson
 colors = {
     'darkRed': pygame.Color(127, 0, 0),
     'red': pygame.Color(255, 0, 0),

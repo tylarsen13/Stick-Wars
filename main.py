@@ -170,7 +170,7 @@ def draw():
         pygame.draw.line(mainWindow, colors['black'], (xmin, y), (xmax, y))
     # pygame.draw.circle(mainWindow, colors['black'], (300 + scrollOffsetX, 300 + scrollOffsetY), 100)
     # Test image drawing
-    image = pygame.image.load("graphics/infantry.png")
+    image = pygame.image.load("graphics/infantry.png").convert_alpha()
     image = pygame.transform.scale(image, (mapBoxSize, mapBoxSize))
     mainWindow.blit(image, (xmin, ymin))
 

@@ -8,13 +8,13 @@ class Unit(object):
         pass
 
 class GroundUnit(Unit):
-    def __init__(self, team, unitClass):
-        super(GroundUnit, self).__init__(self, team)
-        self.unitClass = unitClass
+    def __init__(self, team):
+        super(GroundUnit, self).__init__(team)
+        self.unitClass = "GroundUnit"
 
 class Infantry(GroundUnit):
-    def __init__(self, team, unitClass, unitType, hp):
-        super(Infantry, self).__init__(self, team, unitClass)
-        self.unitType = unitType
+    def __init__(self, team, hp):
+        super(Infantry, self).__init__(team)
+        self.unitType = "Infantry"
         self.hp = hp
         self.hpMax = 10

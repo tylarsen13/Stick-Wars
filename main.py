@@ -2,6 +2,8 @@ import pygame
 import sys
 from constants import *
 
+from units import Infantry
+
 
 def initGame():
     global fpsClock, windowDimensions, mainWindow
@@ -44,17 +46,26 @@ def initGame():
             terrain = line[0]
             if len(line) > 1:
                 building = line[1]
-            if len(line) == 3:
-                unit = line[2]
+            if len(line) > 2:
+                command = "unit = " + line[2] + "(" + line[3] + ", " + line[4] + ")"
+                exec command
 
             gameMap[row].append({
                 "terrain" : terrain,
                 "building" : building,
                 "unit" : unit
                 })
+
+    loadImages()
     # for a in gameMap:
     #     for b in a:
     #         print b
+
+
+def loadImages():
+    global infantryImage
+    infantryImage = pygame.image.load("graphics/infantry.png").convert_alpha()
+    infantryImage = pygame.transform.scale(infantryImage, (mapBoxSize, mapBoxSize))
 
 
 def checkEvents():
@@ -171,7 +182,7 @@ def draw():
     # pygame.draw.circle(mainWindow, colors['black'], (300 + scrollOffsetX, 300 + scrollOffsetY), 100)
     
     # Draw Terrain
-    global gameMap
+    global gameMap, infantryImage
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]
@@ -189,10 +200,16 @@ def draw():
             rectangle.center = (x, y)
             pygame.draw.rect(mainWindow, color, rectangle)
 
+            u = gameMap[i][j]["unit"]
+            if u != None:
+                if u.unitType == "Infantry":
+                    image = infantryImage
+                x -= (mapBoxSize / 2)
+                y -= (mapBoxSize / 2)
+                mainWindow.blit(image, (x, y))
+
     # Test image drawing
-    image = pygame.image.load("graphics/infantry.png").convert_alpha()
-    image = pygame.transform.scale(image, (mapBoxSize, mapBoxSize))
-    mainWindow.blit(image, (xmin, ymin))
+    
 
 
 

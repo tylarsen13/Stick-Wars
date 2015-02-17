@@ -224,19 +224,25 @@ def draw():
                 mainWindow.blit(image, (x, y))
                 # Draw Hit Points
                 mainWindow.blit((gameFont.render(str(u.hp), False, colors['white'], colors['black'])), (x, y))
-    # Test image drawing
     
 def mouseWasClicked(mousePos, button):
     # Calculate Where the User Clicked on the Map
     global scrollOffsetX, scrollOffsetY
-    global mapBoxSize
+    global mapBoxSize, gameMap
     x, y = mousePos
     x += scrollOffsetX
     y += scrollOffsetY
     # Calculate which grid square they clicked on
     mapX = x // mapBoxSize
     mapY = y // mapBoxSize
-    
+    global selectedUnit
+    if button == 1:
+        selectedUnit = gameMap[mapY][mapX]["unit"]
+    elif button == 3:
+        selectedUnit.attack(gameMap[mapY][mapX]["unit"])
+    if gameMap[mapY][mapX]["unit"].hp == 0:
+            gameMap[mapY][mapX]["unit"] = None
+
 
 
 

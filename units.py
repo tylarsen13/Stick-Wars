@@ -18,3 +18,11 @@ class Infantry(GroundUnit):
         self.unitType = "Infantry"
         self.hp = hp
         self.hpMax = 10
+
+
+    def attack(self, unit):
+        unit.hp *= (.50)
+        unit.hp = int(unit.hp)
+        self.hp *= (.80)
+        self.hp = int(self.hp)
+        

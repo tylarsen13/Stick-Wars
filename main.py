@@ -66,9 +66,16 @@ def initGame():
 
 
 def loadImages():
-    global infantryImage
-    infantryImage = pygame.image.load("graphics/infantry.png").convert_alpha()
-    infantryImage = pygame.transform.scale(infantryImage, (mapBoxSize, mapBoxSize))
+    global infantryImage1, infantryImage2, infantryImage3, infantryImage4
+    infantryImage1 = pygame.image.load("graphics/infantry1.png").convert_alpha()
+    infantryImage2 = pygame.image.load("graphics/infantry2.png").convert_alpha()
+    infantryImage3 = pygame.image.load("graphics/infantry3.png").convert_alpha()
+    infantryImage4 = pygame.image.load("graphics/infantry4.png").convert_alpha()
+    infantryImage1 = pygame.transform.scale(infantryImage1, (mapBoxSize, mapBoxSize))
+    infantryImage2 = pygame.transform.scale(infantryImage2, (mapBoxSize, mapBoxSize))
+    infantryImage3 = pygame.transform.scale(infantryImage3, (mapBoxSize, mapBoxSize))
+    infantryImage4 = pygame.transform.scale(infantryImage4, (mapBoxSize, mapBoxSize))
+
 
 
 def checkEvents():
@@ -153,7 +160,7 @@ def calculateScrolling():
 def endLoopStuff():
     pygame.transform.flip(mainWindow, True, True)
     pygame.display.update()
-    fpsClock.tick(120)
+    fpsClock.tick(30)
 
 
 def draw():
@@ -185,7 +192,8 @@ def draw():
     # pygame.draw.circle(mainWindow, colors['black'], (300 + scrollOffsetX, 300 + scrollOffsetY), 100)
     
     # Draw Terrain
-    global gameMap, infantryImage, gameFont
+    global gameMap, gameFont
+    global infantryImage1, infantryImage2, infantryImage3, infantryImage4
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]
@@ -205,8 +213,9 @@ def draw():
             # Draw Units
             u = gameMap[i][j]["unit"]
             if u != None:
-                if u.unitType == "Infantry":
-                    image = infantryImage
+                unit = u.unitType.lower()
+                command = "image = " + unit + "Image" + str(u.team)
+                exec command
                 x -= (mapBoxSize / 2)
                 y -= (mapBoxSize / 2)
                 mainWindow.blit(image, (x, y))

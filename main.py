@@ -57,6 +57,9 @@ def initGame():
                 })
 
     loadImages()
+    pygame.font.init()
+    global gameFont
+    gameFont = pygame.font.Font(None, mapBoxSize / 4)
     # for a in gameMap:
     #     for b in a:
     #         print b
@@ -182,7 +185,7 @@ def draw():
     # pygame.draw.circle(mainWindow, colors['black'], (300 + scrollOffsetX, 300 + scrollOffsetY), 100)
     
     # Draw Terrain
-    global gameMap, infantryImage
+    global gameMap, infantryImage, gameFont
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]
@@ -199,7 +202,7 @@ def draw():
             rectangle.height = mapBoxSize - gridWidth
             rectangle.center = (x, y)
             pygame.draw.rect(mainWindow, color, rectangle)
-
+            # Draw Units
             u = gameMap[i][j]["unit"]
             if u != None:
                 if u.unitType == "Infantry":
@@ -207,7 +210,8 @@ def draw():
                 x -= (mapBoxSize / 2)
                 y -= (mapBoxSize / 2)
                 mainWindow.blit(image, (x, y))
-
+                # Draw Hit Points
+                mainWindow.blit((gameFont.render(str(u.hp), False, colors['white'], colors['black'])), (x, y))
     # Test image drawing
     
 

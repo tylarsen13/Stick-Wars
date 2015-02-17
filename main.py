@@ -102,7 +102,10 @@ def checkEvents():
                 scrollController("down")
         # Fullscreen Toggle
         elif event.type == pygame.MOUSEBUTTONUP:
-            pass
+            mousePos = event.pos
+            button = event.button
+            mouseWasClicked(mousePos, button)
+
     keys = pygame.key.get_pressed()  #checking pressed keys
     if keys[pygame.K_LEFT]:
         scrollController("left")
@@ -158,7 +161,7 @@ def calculateScrolling():
 
 
 def endLoopStuff():
-    pygame.transform.flip(mainWindow, True, True)
+    # pygame.transform.flip(mainWindow, True, True)
     pygame.display.update()
     fpsClock.tick(30)
 
@@ -222,6 +225,17 @@ def draw():
                 # Draw Hit Points
                 mainWindow.blit((gameFont.render(str(u.hp), False, colors['white'], colors['black'])), (x, y))
     # Test image drawing
+    
+def mouseWasClicked(mousePos, button):
+    # Calculate Where the User Clicked on the Map
+    global scrollOffsetX, scrollOffsetY
+    global mapBoxSize
+    x, y = mousePos
+    x += scrollOffsetX
+    y += scrollOffsetY
+    # Calculate which grid square they clicked on
+    mapX = x // mapBoxSize
+    mapY = y // mapBoxSize
     
 
 

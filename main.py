@@ -77,7 +77,6 @@ def loadImages():
     infantryImage4 = pygame.transform.scale(infantryImage4, (mapBoxSize, mapBoxSize))
 
 
-
 def checkEvents():
     global scrollOffsetX, scrollOffsetY
     for event in pygame.event.get():
@@ -134,9 +133,6 @@ def scrollController(direction):
     else:
         scrollOffsetY += scrollFactor
         scrollOffsetY = valueClamp(scrollOffsetY, minScrollY, maxScrollY)
-
-
-
 
 
 def beginningLoopStuff():
@@ -240,9 +236,16 @@ def mouseWasClicked(mousePos, button):
         selectedUnit = gameMap[mapY][mapX]["unit"]
     elif button == 3:
         selectedUnit.attack(gameMap[mapY][mapX]["unit"])
-    if gameMap[mapY][mapX]["unit"].hp == 0:
-            gameMap[mapY][mapX]["unit"] = None
 
+
+def checkMap():
+    global gameMap
+    # Check Map for units with 0 hp and destroy them!
+    for row in gameMap:
+        for column in row:
+            if column["unit"] != None:
+                if column["unit"].hp == 0:
+                    column["unit"] = None
 
 
 
@@ -254,4 +257,5 @@ while True:
     calculateScrolling()
     draw()
     checkEvents()
+    checkMap()
     endLoopStuff()

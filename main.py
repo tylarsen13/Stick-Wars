@@ -234,10 +234,11 @@ def mouseWasClicked(mousePos, button):
     mapX = x // mapBoxSize
     mapY = y // mapBoxSize
     global selectedUnit
-    if button == 1:
-        selectedUnit = gameMap[mapY][mapX]["unit"]
-    elif button == 3:
-        selectedUnit.attack(gameMap[mapY][mapX]["unit"])
+    if gameMap[mapY][mapX]["unit"] != None:
+        if button == 1:
+            selectedUnit = gameMap[mapY][mapX]["unit"]
+        elif button == 3:
+            selectedUnit.attack(gameMap[mapY][mapX]["unit"])
 
 
 def checkMap():

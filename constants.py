@@ -1,8 +1,6 @@
 import pygame
 
-background_colour = (255, 255, 255)
 size = (800, 450)
-black = (0, 0, 0)
 scrollFactor = 20
 gridWidth = 5
 # Thanks to Micheal Erickson

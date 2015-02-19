@@ -1,6 +1,6 @@
 40
 20
-50
+65
 plain.city.Infantry.2.10
 plain
 plain.city.Infantry.2.10

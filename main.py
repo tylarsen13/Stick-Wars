@@ -1,6 +1,7 @@
 import pygame
 import sys
 from constants import *
+import math
 
 from units import Infantry
 
@@ -49,7 +50,8 @@ def initGame():
             if len(line) > 2:
                 command = "unit = " + line[2] + "(" + line[3] + ", " + line[4] + ")"
                 exec command
-
+                # Normalize initial unit HP
+                unit.hp = math.ceil(unit.hp*10)/10
             gameMap[row].append({
                 "terrain" : terrain,
                 "building" : building,
@@ -244,11 +246,8 @@ def checkMap():
     for row in gameMap:
         for column in row:
             if column["unit"] != None:
-                if column["unit"].hp == 0:
+                if column["unit"].hp <= 0:
                     column["unit"] = None
-
-
-
 
 
 initGame()

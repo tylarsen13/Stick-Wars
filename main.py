@@ -3,7 +3,7 @@ import sys
 from constants import *
 import math
 
-from units import Infantry
+from units import Infantry, Tank
 
 
 def initGame():
@@ -14,7 +14,6 @@ def initGame():
     mainWindow = pygame.display.set_mode(windowDimensions, pygame.FULLSCREEN | pygame.DOUBLEBUF)
     windowDimensions = (mainWindow.get_size())
     pygame.display.set_caption('Stick Wars')
-    mainWindow.fill(background_colour)
 
     global scrollOffsetX, scrollOffsetY
     scrollOffsetX, scrollOffsetY = 0, 0
@@ -77,6 +76,17 @@ def loadImages():
     infantryImage2 = pygame.transform.scale(infantryImage2, (mapBoxSize, mapBoxSize))
     infantryImage3 = pygame.transform.scale(infantryImage3, (mapBoxSize, mapBoxSize))
     infantryImage4 = pygame.transform.scale(infantryImage4, (mapBoxSize, mapBoxSize))
+
+    global tankImage1, tankImage2, tankImage3, tankImage4
+    tankImage1 = pygame.image.load("graphics/tank1.png").convert_alpha()
+    tankImage2 = pygame.image.load("graphics/tank2.png").convert_alpha()
+    tankImage3 = pygame.image.load("graphics/tank3.png").convert_alpha()
+    tankImage4 = pygame.image.load("graphics/tank4.png").convert_alpha()
+    tankImage1 = pygame.transform.scale(tankImage1, (mapBoxSize, mapBoxSize))
+    tankImage2 = pygame.transform.scale(tankImage2, (mapBoxSize, mapBoxSize))
+    tankImage3 = pygame.transform.scale(tankImage3, (mapBoxSize, mapBoxSize))
+    tankImage4 = pygame.transform.scale(tankImage4, (mapBoxSize, mapBoxSize))
+
 
 
 def checkEvents():
@@ -195,6 +205,7 @@ def draw():
     # Draw Terrain
     global gameMap, gameFont
     global infantryImage1, infantryImage2, infantryImage3, infantryImage4
+    global tankImage1, tankImage2, tankImage3, tankImage4
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]

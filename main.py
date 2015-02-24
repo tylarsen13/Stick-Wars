@@ -58,9 +58,15 @@ def initGame():
                 })
 
     loadImages()
+    # Initalize Fonts
     pygame.font.init()
     global gameFont
     gameFont = pygame.font.Font(None, mapBoxSize / 4)
+
+    # Set selected unit to none
+    global selectedUnit
+    selectedUnit = None
+
     # for a in gameMap:
     #     for b in a:
     #         print b
@@ -174,6 +180,12 @@ def endLoopStuff():
     fpsClock.tick(30)
 
 
+def calculateMoveDistance(x1, y1, x2, y2):
+        difx = abs(x1 - x2)
+        dify = abs(y1 - y2)
+        return difx + dify
+
+
 def draw():
     mainWindow.fill(colors['lightGreen'])
     # Draw grid
@@ -233,6 +245,43 @@ def draw():
                 mainWindow.blit(image, (x, y))
                 # Draw Hit Points
                 mainWindow.blit((gameFont.render(str(u.hp), False, colors['white'], colors['black'])), (x, y))
+
+    # Draw available movements for selected unit
+    global selectedUnit, gameMap
+    if selectedUnit != None:
+        y, x = selectedUnit
+        unit = gameMap[y][x]["unit"]
+        dim = unit.moveAbility * 2 + 3
+        grid = []
+        for a in range(dim):
+            grid.append([])
+            for b in range(dim):
+                if a == unit.moveAbility + 1 and b == unit.moveAbility + 1:
+                    grid[a].append("su")
+                elif calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) > unit.moveAbility + 1:
+                    grid[a].append("0")
+                elif calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) > unit.moveAbility:
+                    grid[a].append("-")
+                else:
+                    grid[a].append(None)
+        for a in range(dim):
+            for b in range(dim):
+                if calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) <= unit.moveAbility + 1:
+                    thing = None
+                    try:
+                        j = y - (unit.moveAbility + 1) + a
+                        k = x - (unit.moveAbility + 1) + b
+                        if j < 0 or k < 0:
+                            grid[a][b] = "X"
+                        else:
+                            thing = gameMap[j][k]["unit"]
+                            grid[a][b] = thing.unitType
+                    except:
+                        pass
+
+        for a in range(dim):
+            print grid[a]
+
     
 def mouseWasClicked(mousePos, button):
     # Calculate Where the User Clicked on the Map
@@ -245,11 +294,22 @@ def mouseWasClicked(mousePos, button):
     mapX = x // mapBoxSize
     mapY = y // mapBoxSize
     global selectedUnit
-    if gameMap[mapY][mapX]["unit"] != None:
-        if button == 1:
-            selectedUnit = gameMap[mapY][mapX]["unit"]
-        elif button == 3:
-            selectedUnit.attack(gameMap[mapY][mapX]["unit"])
+    if selectedUnit == None:
+        if gameMap[mapY][mapX]["unit"] != None and gameMap[mapY][mapX]["unit"].active:
+            if button == 1:
+                # Unit has been selected.  Set selectedUnit variable so draw function will draw available moves
+                selectedUnit = (mapY, mapX)
+    else:
+        selectedUnit = None
+
+    print selectedUnit
+
+    # global selectedUnit
+    # if gameMap[mapY][mapX]["unit"] != None:
+    #     if button == 1:
+    #         selectedUnit = gameMap[mapY][mapX]["unit"]
+    #     elif button == 3:
+    #         selectedUnit.attack(gameMap[mapY][mapX]["unit"])
 
 
 def checkMap():

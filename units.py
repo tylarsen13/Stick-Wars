@@ -13,6 +13,7 @@ class GroundUnit(Unit):
     def __init__(self, team):
         super(GroundUnit, self).__init__(team)
         self.unitClass = "GroundUnit"
+        self.active = True
 
     def normalizeHP(self):
         self.hp = math.ceil(self.hp*10)/10
@@ -39,6 +40,7 @@ class Infantry(GroundUnit):
         self.hpMax = 10
         self.firePower = 1
         self.defensePower = 1
+        self.moveAbility = 3
 
 
 class Tank(GroundUnit):
@@ -47,6 +49,7 @@ class Tank(GroundUnit):
         self.unitType = "Tank"
         self.hp = hp
         self.hpMax = 10
-        self.firePower = 3
+        self.firePower = 2
         self.defensePower = 3
+        self.moveAbility = 5
         

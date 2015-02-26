@@ -67,6 +67,10 @@ def initGame():
     global selectedUnit
     selectedUnit = None
 
+    # Set highlighted square to empty list
+    global highlightedSquares
+    highlightedSquares = [] 
+
     # for a in gameMap:
     #     for b in a:
     #         print b
@@ -247,7 +251,17 @@ def draw():
                 mainWindow.blit((gameFont.render(str(u.hp), False, colors['white'], colors['black'])), (x, y))
 
     # Draw available movements for selected unit
-    global selectedUnit, gameMap
+    global highlightedSquares
+    for square in highlightedSquares:
+        y, x = square
+        s = pygame.Surface((mapBoxSize, mapBoxSize), pygame.SRCALPHA)   # per-pixel alpha
+        s.fill((0, 0, 255, 128))                         # notice the alpha value in the color
+        mainWindow.blit(s, (x * mapBoxSize - scrollOffsetX, y * mapBoxSize - scrollOffsetY))
+
+
+def generateSelectedUnitRadar():
+    global selectedUnit, gameMap, selectedUnitRadar
+    selectedUnitRadar = None
     if selectedUnit != None:
         y, x = selectedUnit
         unit = gameMap[y][x]["unit"]
@@ -266,7 +280,9 @@ def draw():
                     grid[a].append(None)
         for a in range(dim):
             for b in range(dim):
-                if calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) <= unit.moveAbility + 1:
+                if a == unit.moveAbility + 1 and b == unit.moveAbility + 1:
+                    grid[a][b] = "su"
+                elif calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) <= unit.moveAbility + 1:
                     thing = None
                     try:
                         j = y - (unit.moveAbility + 1) + a
@@ -274,14 +290,19 @@ def draw():
                         if j < 0 or k < 0:
                             grid[a][b] = "X"
                         else:
-                            thing = gameMap[j][k]["unit"]
-                            grid[a][b] = thing.unitType
+                            thing = gameMap[j][k]
+                            grid[a][b] = thing
                     except:
                         pass
 
         for a in range(dim):
             print grid[a]
 
+        selectedUnitRadar = grid
+        # Which squares need to appear selected? We need to tell the draw function
+        global highlightedSquares
+        highlightedSquares = []
+        highlightedSquares.append((0, 0))
     
 def mouseWasClicked(mousePos, button):
     # Calculate Where the User Clicked on the Map
@@ -299,6 +320,7 @@ def mouseWasClicked(mousePos, button):
             if button == 1:
                 # Unit has been selected.  Set selectedUnit variable so draw function will draw available moves
                 selectedUnit = (mapY, mapX)
+                generateSelectedUnitRadar()
     else:
         selectedUnit = None
 

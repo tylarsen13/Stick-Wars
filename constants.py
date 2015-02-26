@@ -26,6 +26,5 @@ colors = {
     'black': pygame.Color(0, 0, 0),
     'darkGrey': pygame.Color(64, 64, 64),
     'grey': pygame.Color(127, 127, 127),
-    'white': pygame.Color(255, 255, 255),
-    'highlight': pygame.Color(0, 0, 255, 150)
+    'white': pygame.Color(255, 255, 255)
 }

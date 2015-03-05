@@ -259,6 +259,63 @@ def draw():
         mainWindow.blit(s, (x * mapBoxSize - scrollOffsetX, y * mapBoxSize - scrollOffsetY))
 
 
+def checkPrev(x, y, prevX, prevY):
+    if x == prevX and y == prevY:
+        return False
+    else:
+        return True
+
+
+def findAvailableMoves(x, y, moveAbility, prevX, prevY):
+    global ox, oy, highlightedSquares, gameMap
+    global mapWidth, mapHeight
+    if prevX == None and prevY == None:
+        print highlightedSquares
+        print x
+        print y
+        print calculateMoveDistance(ox, oy, x, y)
+        if calculateMoveDistance(ox, oy, x, y) < moveAbility:
+            if x + 1 <= mapWidth - 1:
+                if gameMap[y][x + 1]['unit'] == None:
+                    highlightedSquares.append((y, x + 1))
+                    findAvailableMoves(x + 1, y, moveAbility, x, y)
+            if x - 1 >= 0:
+                if gameMap[y][x - 1]['unit'] == None:
+                    highlightedSquares.append((y, x - 1))
+                    findAvailableMoves(x - 1, y, moveAbility, x, y)
+            if y + 1 <= mapHeight - 1:
+                if gameMap[y + 1][x]['unit'] == None:
+                    highlightedSquares.append((y + 1, x))
+                    findAvailableMoves(x, y + 1, moveAbility, x, y)
+            if y - 1 >= 0:
+                if gameMap[y - 1][x]['unit'] == None:
+                    highlightedSquares.append((y - 1, x))
+                    findAvailableMoves(x, y - 1, moveAbility, x, y)
+    else:
+        print highlightedSquares
+        if calculateMoveDistance(ox, oy, x, y) < moveAbility:
+            if x + 1 <= mapWidth - 1:
+                if checkPrev(x + 1, y, prevX, prevY):
+                    if gameMap[y][x + 1]['unit'] == None:
+                        highlightedSquares.append((y, x + 1))
+                        findAvailableMoves(x + 1, y, moveAbility, x, y)
+            if x - 1 >= 0:
+                if checkPrev(x - 1, y, prevX, prevY):
+                    if gameMap[y][x - 1]['unit'] == None:
+                        highlightedSquares.append((y, x - 1))
+                        findAvailableMoves(x - 1, y, moveAbility, x, y)
+            if y + 1 <= mapHeight - 1:
+                if checkPrev(x, y + 1, prevX, prevY):
+                    if gameMap[y + 1][x]['unit'] == None:
+                        highlightedSquares.append((y + 1, x))
+                        findAvailableMoves(x, y + 1, moveAbility, x, y)
+            if y - 1 >= 0:
+                if checkPrev(x, y - 1, prevX, prevY):
+                    if gameMap[y - 1][x]['unit'] == None:
+                        highlightedSquares.append((y - 1, x))
+                        findAvailableMoves(x, y - 1, moveAbility, x, y)
+
+
 def generateSelectedUnitRadar():
     global selectedUnit, gameMap, selectedUnitRadar
     selectedUnitRadar = None
@@ -295,14 +352,17 @@ def generateSelectedUnitRadar():
                     except:
                         pass
 
-        for a in range(dim):
-            print grid[a]
+        # for a in range(dim):el
+        #     print grid[a]
 
         selectedUnitRadar = grid
         # Which squares need to appear selected? We need to tell the draw function
         global highlightedSquares
         highlightedSquares = []
-        highlightedSquares.append((0, 0))
+
+        global ox, oy
+        oy, ox = selectedUnit
+        findAvailableMoves(x, y, unit.moveAbility, None, None)
     
 def mouseWasClicked(mousePos, button):
     # Calculate Where the User Clicked on the Map

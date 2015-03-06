@@ -70,6 +70,8 @@ def initGame():
     # Set highlighted square to empty list
     global highlightedSquares
     highlightedSquares = [] 
+    global checkedSquares 
+    checkedSquares = []
 
     # for a in gameMap:
     #     for b in a:
@@ -267,53 +269,43 @@ def checkPrev(x, y, prevX, prevY):
 
 
 def findAvailableMoves(x, y, moveAbility, prevX, prevY):
-    global ox, oy, highlightedSquares, gameMap
+    global ox, oy, highlightedSquares, gameMap, checkedSquares
     global mapWidth, mapHeight
-    if prevX == None and prevY == None:
-        print highlightedSquares
-        print x
-        print y
-        print calculateMoveDistance(ox, oy, x, y)
-        if calculateMoveDistance(ox, oy, x, y) < moveAbility:
-            if x + 1 <= mapWidth - 1:
-                if gameMap[y][x + 1]['unit'] == None:
-                    highlightedSquares.append((y, x + 1))
-                    findAvailableMoves(x + 1, y, moveAbility, x, y)
-            if x - 1 >= 0:
-                if gameMap[y][x - 1]['unit'] == None:
-                    highlightedSquares.append((y, x - 1))
-                    findAvailableMoves(x - 1, y, moveAbility, x, y)
-            if y + 1 <= mapHeight - 1:
-                if gameMap[y + 1][x]['unit'] == None:
-                    highlightedSquares.append((y + 1, x))
-                    findAvailableMoves(x, y + 1, moveAbility, x, y)
-            if y - 1 >= 0:
-                if gameMap[y - 1][x]['unit'] == None:
-                    highlightedSquares.append((y - 1, x))
-                    findAvailableMoves(x, y - 1, moveAbility, x, y)
-    else:
-        print highlightedSquares
-        if calculateMoveDistance(ox, oy, x, y) < moveAbility:
-            if x + 1 <= mapWidth - 1:
+    if calculateMoveDistance(ox, oy, x, y) < moveAbility:
+        if x + 1 <= mapWidth - 1:
+            if not (x + 1, y) in checkedSquares:
+                checkedSquares.append((x + 1, y))
                 if checkPrev(x + 1, y, prevX, prevY):
                     if gameMap[y][x + 1]['unit'] == None:
                         highlightedSquares.append((y, x + 1))
                         findAvailableMoves(x + 1, y, moveAbility, x, y)
-            if x - 1 >= 0:
+        if x - 1 >= 0:
+            if not (x - 1, y) in checkedSquares:
+                checkedSquares.append((x - 1, y))
                 if checkPrev(x - 1, y, prevX, prevY):
                     if gameMap[y][x - 1]['unit'] == None:
                         highlightedSquares.append((y, x - 1))
                         findAvailableMoves(x - 1, y, moveAbility, x, y)
-            if y + 1 <= mapHeight - 1:
+        if y + 1 <= mapHeight - 1:
+            if not (x, y + 1) in checkedSquares:
+                checkedSquares.append((x, y + 1))
                 if checkPrev(x, y + 1, prevX, prevY):
                     if gameMap[y + 1][x]['unit'] == None:
                         highlightedSquares.append((y + 1, x))
                         findAvailableMoves(x, y + 1, moveAbility, x, y)
-            if y - 1 >= 0:
+        if y - 1 >= 0:
+            if not (x, y - 1) in checkedSquares:
+                checkedSquares.append((x, y - 1))
                 if checkPrev(x, y - 1, prevX, prevY):
                     if gameMap[y - 1][x]['unit'] == None:
                         highlightedSquares.append((y - 1, x))
                         findAvailableMoves(x, y - 1, moveAbility, x, y)
+
+
+def f7(seq):
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in seq if not (x in seen or seen_add(x))]
 
 
 def generateSelectedUnitRadar():
@@ -362,7 +354,16 @@ def generateSelectedUnitRadar():
 
         global ox, oy
         oy, ox = selectedUnit
-        findAvailableMoves(x, y, unit.moveAbility, None, None)
+        findAvailableMoves(x, y, unit.moveAbility, x, y)
+        highlightedSquares = f7(highlightedSquares)
+
+def moveSelectedUnit(mapX, mapY):
+    global selectedUnit, gameMap
+    y, x = selectedUnit
+    unit = gameMap[y][x]['unit']
+    gameMap[y][x]['unit'] = None
+    gameMap[mapY][mapX]['unit'] = unit
+
     
 def mouseWasClicked(mousePos, button):
     # Calculate Where the User Clicked on the Map
@@ -374,7 +375,7 @@ def mouseWasClicked(mousePos, button):
     # Calculate which grid square they clicked on
     mapX = x // mapBoxSize
     mapY = y // mapBoxSize
-    global selectedUnit
+    global selectedUnit, highlightedSquares, checkedSquares
     if selectedUnit == None:
         if gameMap[mapY][mapX]["unit"] != None and gameMap[mapY][mapX]["unit"].active:
             if button == 1:
@@ -382,9 +383,12 @@ def mouseWasClicked(mousePos, button):
                 selectedUnit = (mapY, mapX)
                 generateSelectedUnitRadar()
     else:
+        y, x = selectedUnit
+        if calculateMoveDistance(mapX, mapY, x, y) <= gameMap[y][x]["unit"].moveAbility and gameMap[mapY][mapX]['unit'] == None:
+            moveSelectedUnit(mapX, mapY)
         selectedUnit = None
-
-    print selectedUnit
+        highlightedSquares = []
+        checkedSquares = []
 
     # global selectedUnit
     # if gameMap[mapY][mapX]["unit"] != None:

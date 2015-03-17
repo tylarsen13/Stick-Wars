@@ -72,6 +72,8 @@ def initGame():
     highlightedSquares = [] 
     global checkedSquares 
     checkedSquares = []
+    global drawOptions
+    drawOptions = None
 
     # for a in gameMap:
     #     for b in a:
@@ -102,7 +104,7 @@ def loadImages():
 
 
 def checkEvents():
-    global scrollOffsetX, scrollOffsetY
+    global scrollOffsetX, scrollOffsetY, windowDimensions
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -128,6 +130,9 @@ def checkEvents():
             mousePos = event.pos
             button = event.button
             mouseWasClicked(mousePos, button)
+
+        elif event.type == pygame.VIDEORESIZE:
+            windowDimensions = event.dict['size']
 
     keys = pygame.key.get_pressed()  #checking pressed keys
     if keys[pygame.K_LEFT]:
@@ -167,7 +172,7 @@ def calculateScrolling():
     global mapWidthPix, mapHeightPix
     # Calculate Scrolling Min and Max
     global minScrollX, maxScrollX, minScrollY, maxScrollY
-    (x, y) = mainWindow.get_size()
+    (x, y) = windowDimensions
     minScrollX, minScrollY = 0, 0
     if x >= mapWidthPix:
         maxScrollX = 0
@@ -259,6 +264,12 @@ def draw():
         s = pygame.Surface((mapBoxSize, mapBoxSize), pygame.SRCALPHA)   # per-pixel alpha
         s.fill((0, 0, 255, 128))                         # notice the alpha value in the color
         mainWindow.blit(s, (x * mapBoxSize - scrollOffsetX, y * mapBoxSize - scrollOffsetY))
+
+    # Draw options after moving unit
+    global drawOptions
+    if drawOptions != None:
+        rect1dim = drawOptions[0]
+
 
 
 def checkPrev(x, y, prevX, prevY):
@@ -375,7 +386,7 @@ def mouseWasClicked(mousePos, button):
     # Calculate which grid square they clicked on
     mapX = x // mapBoxSize
     mapY = y // mapBoxSize
-    global selectedUnit, highlightedSquares, checkedSquares
+    global selectedUnit, highlightedSquares, checkedSquares, drawOptions
     if selectedUnit == None:
         if gameMap[mapY][mapX]["unit"] != None and gameMap[mapY][mapX]["unit"].active:
             if button == 1:
@@ -386,9 +397,13 @@ def mouseWasClicked(mousePos, button):
         y, x = selectedUnit
         if calculateMoveDistance(mapX, mapY, x, y) <= gameMap[y][x]["unit"].moveAbility and gameMap[mapY][mapX]['unit'] == None:
             moveSelectedUnit(mapX, mapY)
+            # give draw function information to draw the unit's options
+            # which corner should the options be drawn in?
+
         selectedUnit = None
         highlightedSquares = []
         checkedSquares = []
+
 
     # global selectedUnit
     # if gameMap[mapY][mapX]["unit"] != None:

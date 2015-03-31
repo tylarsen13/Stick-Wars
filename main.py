@@ -63,9 +63,14 @@ def initGame():
     global gameFont
     gameFont = pygame.font.Font(None, mapBoxSize / 4)
 
+    global optionFont
+    optionFont = pygame.font.Font(None, 45)
+
     # Set selected unit to none
     global selectedUnit
     selectedUnit = None
+    global selectedUnitMap
+    selectedUnitMap = None
 
     # Set highlighted square to empty list
     global highlightedSquares
@@ -74,6 +79,10 @@ def initGame():
     checkedSquares = []
     global drawOptions
     drawOptions = None
+    global selectedUnitOptions
+    selectedUnitOptions = []
+    global menuOn
+    menuOn = False
 
     # for a in gameMap:
     #     for b in a:
@@ -266,10 +275,18 @@ def draw():
         mainWindow.blit(s, (x * mapBoxSize - scrollOffsetX, y * mapBoxSize - scrollOffsetY))
 
     # Draw options after moving unit
-    global drawOptions
+    global drawOptions, optionFont
     if drawOptions != None:
         rect1dim = drawOptions[0]
-
+        rect1 = pygame.Rect(0, 0, 0, 0)
+        rect1.height = rect1dim[0]
+        rect1.width = rect1dim[1]
+        rect1.center = rect1dim[2]
+        pygame.draw.rect(mainWindow, colors['lightYellow'], rect1)
+        for i in range(len(drawOptions) - 1):
+            string = drawOptions[i + 1][0]
+            center = drawOptions[i + 1][1]
+            mainWindow.blit((optionFont.render(string, False, colors['white'], colors['black'])), center)
 
 
 def checkPrev(x, y, prevX, prevY):
@@ -366,7 +383,35 @@ def generateSelectedUnitRadar():
         global ox, oy
         oy, ox = selectedUnit
         findAvailableMoves(x, y, unit.moveAbility, x, y)
+        highlightedSquares.append((oy, ox))
         highlightedSquares = f7(highlightedSquares)
+
+
+def generateSelectedUnitOptions(x, y):
+    global gameMap, mapHeight, mapWidth, selectedUnitOptions
+    selectedUnitOptions = []
+    if x + 1 <= mapWidth - 1:
+        if gameMap[y][x + 1]['unit'] != None:
+            if gameMap[y][x + 1]['unit'].team != gameMap[y][x]['unit'].team:
+                if not "attack" in selectedUnitOptions:
+                    selectedUnitOptions.append("attack")
+    if x - 1 >= 0:
+        if gameMap[y][x - 1]['unit'] != None:
+            if gameMap[y][x - 1]['unit'].team != gameMap[y][x]['unit'].team:
+                if "attack" not in selectedUnitOptions:
+                    selectedUnitOptions.append("attack")
+    if y + 1 <= mapHeight - 1:
+        if gameMap[y + 1][x]['unit'] != None:
+            if gameMap[y + 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                if "attack" not in selectedUnitOptions:
+                    selectedUnitOptions.append("attack")
+    if y - 1 >= 0:
+        if gameMap[y - 1][x]['unit'] != None:
+            if gameMap[y - 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                if "attack" not in selectedUnitOptions:
+                    selectedUnitOptions.append("attack")
+    selectedUnitOptions.append("wait")
+    
 
 def moveSelectedUnit(mapX, mapY):
     global selectedUnit, gameMap
@@ -377,33 +422,79 @@ def moveSelectedUnit(mapX, mapY):
 
     
 def mouseWasClicked(mousePos, button):
-    # Calculate Where the User Clicked on the Map
-    global scrollOffsetX, scrollOffsetY
-    global mapBoxSize, gameMap
-    x, y = mousePos
-    x += scrollOffsetX
-    y += scrollOffsetY
-    # Calculate which grid square they clicked on
-    mapX = x // mapBoxSize
-    mapY = y // mapBoxSize
-    global selectedUnit, highlightedSquares, checkedSquares, drawOptions
-    if selectedUnit == None:
-        if gameMap[mapY][mapX]["unit"] != None and gameMap[mapY][mapX]["unit"].active:
-            if button == 1:
-                # Unit has been selected.  Set selectedUnit variable so draw function will draw available moves
-                selectedUnit = (mapY, mapX)
-                generateSelectedUnitRadar()
+    global menuOn, drawOptions, selectedUnit, selectedUnitMap
+    if not menuOn:
+        # Calculate Where the User Clicked on the Map
+        global scrollOffsetX, scrollOffsetY
+        global mapBoxSize, gameMap, windowDimensions
+        x, y = mousePos
+        x += scrollOffsetX
+        y += scrollOffsetY
+        # Calculate which grid square they clicked on
+        mapX = x // mapBoxSize
+        mapY = y // mapBoxSize
+        global highlightedSquares, checkedSquares
+        if selectedUnit == None:
+            if gameMap[mapY][mapX]["unit"] != None and gameMap[mapY][mapX]["unit"].active:
+                if button == 1:
+                    # Unit has been selected.  Set selectedUnit variable so draw function will draw available moves
+                    selectedUnit = (mapY, mapX)
+                    generateSelectedUnitRadar()
+        else:
+            y, x = selectedUnit
+            if calculateMoveDistance(mapX, mapY, x, y) <= gameMap[y][x]["unit"].moveAbility and (gameMap[mapY][mapX]['unit'] == None or (mapX == x and mapY == y)):
+                moveSelectedUnit(mapX, mapY)
+                selectedUnitMap = (mapX, mapY)
+                menuOn = True
+                # give draw function information to draw the unit's options
+                # which corner should the options be drawn in?
+                corner = 1
+                if calculateMoveDistance(mapX, mapY, 0, 0) < 5:
+                    corner = 2
+                    xx, yy = windowDimensions
+                # which options does the unit have?
+                generateSelectedUnitOptions(mapX, mapY)
+                global selectedUnitOptions
+                print selectedUnitOptions
+                # drawOptions = [[Rect Height, Rect Width, Rect Center], for each option - [Option Text, Option Position]]
+                width = 100
+                height = 75 + (50 * len(selectedUnitOptions))
+                if corner == 1:
+                    center = (width / 2, height / 2)
+                elif corner == 2:
+                    center = (xx - width / 2, yy - height / 2)
+                drawOptions = []
+                drawOptions.append([height, width, center])
+                if corner == 1:
+                    for i in range(len(selectedUnitOptions)):
+                        xxx = 0
+                        yyy = (i + 1) * 50
+                        drawOptions.append([selectedUnitOptions[i], (xxx, yyy)])
+                else:
+                    for i in range(len(selectedUnitOptions)):
+                        xxx = xx - width
+                        yyy = yy - ((i + 1) * 50)
+                        drawOptions.append([selectedUnitOptions[i], (xxx, yyy)])
+                highlightedSquares = []
+                checkedSquares = []
+            else:   
+                selectedUnit = None
+                highlightedSquares = []
+                checkedSquares = []
     else:
         y, x = selectedUnit
-        if calculateMoveDistance(mapX, mapY, x, y) <= gameMap[y][x]["unit"].moveAbility and gameMap[mapY][mapX]['unit'] == None:
-            moveSelectedUnit(mapX, mapY)
-            # give draw function information to draw the unit's options
-            # which corner should the options be drawn in?
-
+        xmap, ymap = selectedUnitMap
+        if True: #no option is clicked
+            #move unit back to original position
+            unit = gameMap[ymap][xmap]['unit']
+            gameMap[ymap][xmap]['unit'] = None
+            gameMap[y][x]['unit'] = unit
+        menuOn = False
+        drawOptions = None
         selectedUnit = None
+        selectedUnitMap = None
         highlightedSquares = []
         checkedSquares = []
-
 
     # global selectedUnit
     # if gameMap[mapY][mapX]["unit"] != None:

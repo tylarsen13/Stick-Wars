@@ -309,12 +309,16 @@ def findAvailableMoves(x, y, moveAbility, prevX, prevY):
                     if gameMap[y][x + 1]['unit'] == None:
                         highlightedSquares.append((y, x + 1))
                         findAvailableMoves(x + 1, y, moveAbility, x, y)
+                    elif gameMap[oy][ox]['unit'].team == gameMap[y][x + 1]['unit'].team:
+                        findAvailableMoves(x + 1, y, moveAbility, x, y)
         if x - 1 >= 0:
             if not (x - 1, y) in checkedSquares:
                 checkedSquares.append((x - 1, y))
                 if checkPrev(x - 1, y, prevX, prevY):
                     if gameMap[y][x - 1]['unit'] == None:
                         highlightedSquares.append((y, x - 1))
+                        findAvailableMoves(x - 1, y, moveAbility, x, y)
+                    elif gameMap[oy][ox]['unit'].team == gameMap[y][x - 1]['unit'].team:
                         findAvailableMoves(x - 1, y, moveAbility, x, y)
         if y + 1 <= mapHeight - 1:
             if not (x, y + 1) in checkedSquares:
@@ -323,12 +327,16 @@ def findAvailableMoves(x, y, moveAbility, prevX, prevY):
                     if gameMap[y + 1][x]['unit'] == None:
                         highlightedSquares.append((y + 1, x))
                         findAvailableMoves(x, y + 1, moveAbility, x, y)
+                    elif gameMap[oy][ox]['unit'].team == gameMap[y + 1][x]['unit'].team:
+                        findAvailableMoves(x, y + 1, moveAbility, x, y)
         if y - 1 >= 0:
             if not (x, y - 1) in checkedSquares:
                 checkedSquares.append((x, y - 1))
                 if checkPrev(x, y - 1, prevX, prevY):
                     if gameMap[y - 1][x]['unit'] == None:
                         highlightedSquares.append((y - 1, x))
+                        findAvailableMoves(x, y - 1, moveAbility, x, y)
+                    elif gameMap[oy][ox]['unit'].team == gameMap[y - 1][x]['unit'].team:
                         findAvailableMoves(x, y - 1, moveAbility, x, y)
 
 
@@ -415,7 +423,7 @@ def generateSelectedUnitOptions(x, y):
                         selectedUnitOptions.append("attack")
         selectedUnitOptions.append("wait")
     else: #if units have a range more than 1
-        
+        pass
     
 
 def moveSelectedUnit(mapX, mapY):

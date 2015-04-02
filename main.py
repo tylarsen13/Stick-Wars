@@ -83,6 +83,8 @@ def initGame():
     selectedUnitOptions = []
     global menuOn
     menuOn = False
+    global menuCorner
+    menuCorner = None
 
     # for a in gameMap:
     #     for b in a:
@@ -389,28 +391,31 @@ def generateSelectedUnitRadar():
 
 def generateSelectedUnitOptions(x, y):
     global gameMap, mapHeight, mapWidth, selectedUnitOptions
-    selectedUnitOptions = []
-    if x + 1 <= mapWidth - 1:
-        if gameMap[y][x + 1]['unit'] != None:
-            if gameMap[y][x + 1]['unit'].team != gameMap[y][x]['unit'].team:
-                if not "attack" in selectedUnitOptions:
-                    selectedUnitOptions.append("attack")
-    if x - 1 >= 0:
-        if gameMap[y][x - 1]['unit'] != None:
-            if gameMap[y][x - 1]['unit'].team != gameMap[y][x]['unit'].team:
-                if "attack" not in selectedUnitOptions:
-                    selectedUnitOptions.append("attack")
-    if y + 1 <= mapHeight - 1:
-        if gameMap[y + 1][x]['unit'] != None:
-            if gameMap[y + 1][x]['unit'].team != gameMap[y][x]['unit'].team:
-                if "attack" not in selectedUnitOptions:
-                    selectedUnitOptions.append("attack")
-    if y - 1 >= 0:
-        if gameMap[y - 1][x]['unit'] != None:
-            if gameMap[y - 1][x]['unit'].team != gameMap[y][x]['unit'].team:
-                if "attack" not in selectedUnitOptions:
-                    selectedUnitOptions.append("attack")
-    selectedUnitOptions.append("wait")
+    if gameMap[y][x]['unit'].range == 1: #if units range is only 1
+        selectedUnitOptions = []
+        if x + 1 <= mapWidth - 1:
+            if gameMap[y][x + 1]['unit'] != None:
+                if gameMap[y][x + 1]['unit'].team != gameMap[y][x]['unit'].team:
+                    if not "attack" in selectedUnitOptions:
+                        selectedUnitOptions.append("attack")
+        if x - 1 >= 0:
+            if gameMap[y][x - 1]['unit'] != None:
+                if gameMap[y][x - 1]['unit'].team != gameMap[y][x]['unit'].team:
+                    if "attack" not in selectedUnitOptions:
+                        selectedUnitOptions.append("attack")
+        if y + 1 <= mapHeight - 1:
+            if gameMap[y + 1][x]['unit'] != None:
+                if gameMap[y + 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                    if "attack" not in selectedUnitOptions:
+                        selectedUnitOptions.append("attack")
+        if y - 1 >= 0:
+            if gameMap[y - 1][x]['unit'] != None:
+                if gameMap[y - 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                    if "attack" not in selectedUnitOptions:
+                        selectedUnitOptions.append("attack")
+        selectedUnitOptions.append("wait")
+    else: #if units have a range more than 1
+        
     
 
 def moveSelectedUnit(mapX, mapY):
@@ -422,7 +427,7 @@ def moveSelectedUnit(mapX, mapY):
 
     
 def mouseWasClicked(mousePos, button):
-    global menuOn, drawOptions, selectedUnit, selectedUnitMap
+    global menuOn, drawOptions, selectedUnit, selectedUnitMap, menuCorner
     if not menuOn:
         # Calculate Where the User Clicked on the Map
         global scrollOffsetX, scrollOffsetY
@@ -448,9 +453,9 @@ def mouseWasClicked(mousePos, button):
                 menuOn = True
                 # give draw function information to draw the unit's options
                 # which corner should the options be drawn in?
-                corner = 1
+                menuCorner = 1
                 if calculateMoveDistance(mapX, mapY, 0, 0) < 5:
-                    corner = 2
+                    menuCorner = 2
                     xx, yy = windowDimensions
                 # which options does the unit have?
                 generateSelectedUnitOptions(mapX, mapY)
@@ -459,13 +464,13 @@ def mouseWasClicked(mousePos, button):
                 # drawOptions = [[Rect Height, Rect Width, Rect Center], for each option - [Option Text, Option Position]]
                 width = 100
                 height = 75 + (50 * len(selectedUnitOptions))
-                if corner == 1:
+                if menuCorner == 1:
                     center = (width / 2, height / 2)
-                elif corner == 2:
+                elif menuCorner == 2:
                     center = (xx - width / 2, yy - height / 2)
                 drawOptions = []
                 drawOptions.append([height, width, center])
-                if corner == 1:
+                if menuCorner == 1:
                     for i in range(len(selectedUnitOptions)):
                         xxx = 0
                         yyy = (i + 1) * 50
@@ -473,7 +478,7 @@ def mouseWasClicked(mousePos, button):
                 else:
                     for i in range(len(selectedUnitOptions)):
                         xxx = xx - width
-                        yyy = yy - ((i + 1) * 50)
+                        yyy = yy - ((i + 1) * 50) - 25
                         drawOptions.append([selectedUnitOptions[i], (xxx, yyy)])
                 highlightedSquares = []
                 checkedSquares = []
@@ -484,11 +489,24 @@ def mouseWasClicked(mousePos, button):
     else:
         y, x = selectedUnit
         xmap, ymap = selectedUnitMap
-        if True: #no option is clicked
+        mouseX, mouseY = mousePos
+        clickedOption = None
+        if menuCorner == 1:
+            if mouseX >= 0 and mouseX <= 100:
+                clickedOption = (mouseY - (75/2)) // 50
+        else:
+            xx, yy = windowDimensions
+            if mouseX <= xx and mouseX >= xx - 100:
+                clickedOption = ((yy - mouseY) - (75/2)) // 50
+        if clickedOption == None: #no option is clicked
             #move unit back to original position
             unit = gameMap[ymap][xmap]['unit']
             gameMap[ymap][xmap]['unit'] = None
             gameMap[y][x]['unit'] = unit
+        elif selectedUnitOptions[clickedOption] == "wait":
+            gameMap[ymap][xmap]['unit'].active = False
+        elif selectedUnitOptions[clickedOption] == "attack":
+            pass
         menuOn = False
         drawOptions = None
         selectedUnit = None

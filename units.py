@@ -41,6 +41,7 @@ class Infantry(GroundUnit):
         self.firePower = 1
         self.defensePower = 1
         self.moveAbility = 3
+        self.range = 1
 
 
 class Tank(GroundUnit):
@@ -52,4 +53,5 @@ class Tank(GroundUnit):
         self.firePower = 2
         self.defensePower = 3
         self.moveAbility = 5
+        self.range = 1
         

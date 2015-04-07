@@ -85,6 +85,10 @@ def initGame():
     menuOn = False
     global menuCorner
     menuCorner = None
+    global selectedUnitAttacks
+    selectedUnitAttacks = []
+    global attackOn
+    attackOn = False
 
     # for a in gameMap:
     #     for b in a:
@@ -203,9 +207,9 @@ def endLoopStuff():
 
 
 def calculateMoveDistance(x1, y1, x2, y2):
-        difx = abs(x1 - x2)
-        dify = abs(y1 - y2)
-        return difx + dify
+    difx = abs(x1 - x2)
+    dify = abs(y1 - y2)
+    return difx + dify
 
 
 def draw():
@@ -290,6 +294,13 @@ def draw():
             center = drawOptions[i + 1][1]
             mainWindow.blit((optionFont.render(string, False, colors['white'], colors['black'])), center)
 
+    global attackOn, selectedUnitAttacks
+    if attackOn:
+        for square in selectedUnitAttacks:
+            x, y = square
+            s = pygame.Surface((mapBoxSize, mapBoxSize), pygame.SRCALPHA)   # per-pixel alpha
+            s.fill((255, 0, 0, 128))                         # notice the alpha value in the color
+            mainWindow.blit(s, (x * mapBoxSize - scrollOffsetX, y * mapBoxSize - scrollOffsetY))
 
 def checkPrev(x, y, prevX, prevY):
     if x == prevX and y == prevY:
@@ -398,33 +409,37 @@ def generateSelectedUnitRadar():
 
 
 def generateSelectedUnitOptions(x, y):
-    global gameMap, mapHeight, mapWidth, selectedUnitOptions
+    global gameMap, mapHeight, mapWidth, selectedUnitOptions, selectedUnitAttacks
     if gameMap[y][x]['unit'].range == 1: #if units range is only 1
         selectedUnitOptions = []
         if x + 1 <= mapWidth - 1:
             if gameMap[y][x + 1]['unit'] != None:
                 if gameMap[y][x + 1]['unit'].team != gameMap[y][x]['unit'].team:
+                    selectedUnitAttacks.append((x + 1, y))
                     if not "attack" in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
         if x - 1 >= 0:
             if gameMap[y][x - 1]['unit'] != None:
                 if gameMap[y][x - 1]['unit'].team != gameMap[y][x]['unit'].team:
+                    selectedUnitAttacks.append((x - 1, y))
                     if "attack" not in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
         if y + 1 <= mapHeight - 1:
             if gameMap[y + 1][x]['unit'] != None:
                 if gameMap[y + 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                    selectedUnitAttacks.append((x, y + 1))
                     if "attack" not in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
         if y - 1 >= 0:
             if gameMap[y - 1][x]['unit'] != None:
                 if gameMap[y - 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                    selectedUnitAttacks.append((x, y - 1))
                     if "attack" not in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
         selectedUnitOptions.append("wait")
     else: #if units have a range more than 1
         pass
-    
+
 
 def moveSelectedUnit(mapX, mapY):
     global selectedUnit, gameMap
@@ -435,7 +450,7 @@ def moveSelectedUnit(mapX, mapY):
 
     
 def mouseWasClicked(mousePos, button):
-    global menuOn, drawOptions, selectedUnit, selectedUnitMap, menuCorner
+    global menuOn, drawOptions, selectedUnit, selectedUnitMap, menuCorner, selectedUnitAttacks, attackOn
     if not menuOn:
         # Calculate Where the User Clicked on the Map
         global scrollOffsetX, scrollOffsetY
@@ -494,6 +509,43 @@ def mouseWasClicked(mousePos, button):
                 selectedUnit = None
                 highlightedSquares = []
                 checkedSquares = []
+    elif attackOn:
+        global scrollOffsetX, scrollOffsetY
+        global mapBoxSize, gameMap, windowDimensions
+        x, y = mousePos
+        x += scrollOffsetX
+        y += scrollOffsetY
+        # Calculate which grid square they clicked on
+        mapX = x // mapBoxSize
+        mapY = y // mapBoxSize
+        for option in selectedUnitAttacks:
+            if option == (mapX, mapY):
+                x, y = selectedUnitMap
+                gameMap[y][x]['unit'].attack(gameMap[mapY][mapX]['unit'])
+                gameMap[y][x]['unit'].active = False
+                menuOn = False
+                attackOn = False
+                drawOptions = None
+                selectedUnit = None
+                selectedUnitMap = None
+                highlightedSquares = []
+                checkedSquares = []
+                selectedUnitAttacks = []
+                return
+        # User did not click on a valid attack spot
+        #move unit back to original position
+        ys, xs = selectedUnit
+        unit = gameMap[y][x]['unit']
+        gameMap[y][x]['unit'] = None
+        gameMap[ys][xs]['unit'] = unit
+        menuOn = False
+        attackOn = False
+        drawOptions = None
+        selectedUnit = None
+        selectedUnitMap = None
+        highlightedSquares = []
+        checkedSquares = []
+        selectedUnitAttacks = []
     else:
         y, x = selectedUnit
         xmap, ymap = selectedUnitMap
@@ -514,7 +566,8 @@ def mouseWasClicked(mousePos, button):
         elif selectedUnitOptions[clickedOption] == "wait":
             gameMap[ymap][xmap]['unit'].active = False
         elif selectedUnitOptions[clickedOption] == "attack":
-            pass
+            attackOn = True
+            return
         menuOn = False
         drawOptions = None
         selectedUnit = None

@@ -22,7 +22,7 @@ pixdata1 = img1.load()
 
 for y in xrange(img1.size[1]):
     for x in xrange(img1.size[0]):
-        if pixdata1[x, y] == (237, 28, 36, 255):
+        if pixdata1[x, y] == (255, 0, 0, 255):
             pixdata1[x, y] = (0, 0, 255, 255)
 
 img1.save(userInput + "2.png", "PNG")
@@ -35,7 +35,7 @@ pixdata2 = img2.load()
 
 for y in xrange(img2.size[1]):
     for x in xrange(img2.size[0]):
-        if pixdata2[x, y] == (237, 28, 36, 255):
+        if pixdata2[x, y] == (255, 0, 0, 255):
             pixdata2[x, y] = (0, 64, 0, 255)
 
 img2.save(userInput + "3.png", "PNG")
@@ -48,7 +48,7 @@ pixdata3 = img3.load()
 
 for y in xrange(img3.size[1]):
     for x in xrange(img3.size[0]):
-        if pixdata3[x, y] == (237, 28, 36, 255):
+        if pixdata3[x, y] == (255, 0, 0, 255):
             pixdata3[x, y] = (255, 242, 0, 255)
 
 img3.save(userInput + "4.png", "PNG")

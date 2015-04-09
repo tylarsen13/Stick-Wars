@@ -106,6 +106,16 @@ def loadImages():
     infantryImage3 = pygame.transform.scale(infantryImage3, (mapBoxSize, mapBoxSize))
     infantryImage4 = pygame.transform.scale(infantryImage4, (mapBoxSize, mapBoxSize))
 
+    global infantryImage1inactive, infantryImage2inactive, infantryImage3inactive, infantryImage4inactive
+    infantryImage1inactive = pygame.image.load("graphics/infantry1inactive.png").convert_alpha()
+    infantryImage2inactive = pygame.image.load("graphics/infantry2inactive.png").convert_alpha()
+    infantryImage3inactive = pygame.image.load("graphics/infantry3inactive.png").convert_alpha()
+    infantryImage4inactive = pygame.image.load("graphics/infantry4inactive.png").convert_alpha()
+    infantryImage1inactive = pygame.transform.scale(infantryImage1inactive, (mapBoxSize, mapBoxSize))
+    infantryImage2inactive = pygame.transform.scale(infantryImage2inactive, (mapBoxSize, mapBoxSize))
+    infantryImage3inactive = pygame.transform.scale(infantryImage3inactive, (mapBoxSize, mapBoxSize))
+    infantryImage4inactive = pygame.transform.scale(infantryImage4inactive, (mapBoxSize, mapBoxSize))
+
     global tankImage1, tankImage2, tankImage3, tankImage4
     tankImage1 = pygame.image.load("graphics/tank1.png").convert_alpha()
     tankImage2 = pygame.image.load("graphics/tank2.png").convert_alpha()
@@ -115,6 +125,16 @@ def loadImages():
     tankImage2 = pygame.transform.scale(tankImage2, (mapBoxSize, mapBoxSize))
     tankImage3 = pygame.transform.scale(tankImage3, (mapBoxSize, mapBoxSize))
     tankImage4 = pygame.transform.scale(tankImage4, (mapBoxSize, mapBoxSize))
+
+    global tankImage1inactive, tankImage2inactive, tankImage3inactive, tankImage4inactive
+    tankImage1inactive = pygame.image.load("graphics/tank1inactive.png").convert_alpha()
+    tankImage2inactive = pygame.image.load("graphics/tank2inactive.png").convert_alpha()
+    tankImage3inactive = pygame.image.load("graphics/tank3inactive.png").convert_alpha()
+    tankImage4inactive = pygame.image.load("graphics/tank4inactive.png").convert_alpha()
+    tankImage1inactive = pygame.transform.scale(tankImage1inactive, (mapBoxSize, mapBoxSize))
+    tankImage2inactive = pygame.transform.scale(tankImage2inactive, (mapBoxSize, mapBoxSize))
+    tankImage3inactive = pygame.transform.scale(tankImage3inactive, (mapBoxSize, mapBoxSize))
+    tankImage4inactive = pygame.transform.scale(tankImage4inactive, (mapBoxSize, mapBoxSize))
 
 
 
@@ -243,7 +263,9 @@ def draw():
     # Draw Terrain
     global gameMap, gameFont
     global infantryImage1, infantryImage2, infantryImage3, infantryImage4
+    global infantryImage1inactive, infantryImage2inactive, infantryImage3inactive, infantryImage4inactive
     global tankImage1, tankImage2, tankImage3, tankImage4
+    global tankImage1inactive, tankImage2inactive, tankImage3inactive, tankImage4inactive
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]
@@ -265,6 +287,8 @@ def draw():
             if u != None:
                 unit = u.unitType.lower()
                 command = "image = " + unit + "Image" + str(u.team)
+                if not u.active:
+                    command += "inactive"
                 exec command
                 x -= (mapBoxSize / 2)
                 y -= (mapBoxSize / 2)

@@ -558,6 +558,7 @@ def mouseWasClicked(mousePos, button):
                 return
         # User did not click on a valid attack spot
         #move unit back to original position
+        x, y = selectedUnitMap
         ys, xs = selectedUnit
         unit = gameMap[y][x]['unit']
         gameMap[y][x]['unit'] = None
@@ -582,7 +583,7 @@ def mouseWasClicked(mousePos, button):
             xx, yy = windowDimensions
             if mouseX <= xx and mouseX >= xx - 100:
                 clickedOption = ((yy - mouseY) - (75/2)) // 50
-        if clickedOption == None: #no option is clicked
+        if clickedOption == None or clickedOption >= len(selectedUnitOptions): #no option is clicked
             #move unit back to original position
             unit = gameMap[ymap][xmap]['unit']
             gameMap[ymap][xmap]['unit'] = None
@@ -598,6 +599,7 @@ def mouseWasClicked(mousePos, button):
         selectedUnitMap = None
         highlightedSquares = []
         checkedSquares = []
+        selectedUnitAttacks = []
 
     # global selectedUnit
     # if gameMap[mapY][mapX]["unit"] != None:

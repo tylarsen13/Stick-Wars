@@ -3,7 +3,7 @@ import sys
 from constants import *
 import math
 
-from units import Infantry, Tank
+from units import Infantry, Tank, Artillery
 
 
 def initGame():
@@ -116,6 +116,7 @@ def loadImages():
     infantryImage3inactive = pygame.transform.scale(infantryImage3inactive, (mapBoxSize, mapBoxSize))
     infantryImage4inactive = pygame.transform.scale(infantryImage4inactive, (mapBoxSize, mapBoxSize))
 
+
     global tankImage1, tankImage2, tankImage3, tankImage4
     tankImage1 = pygame.image.load("graphics/tank1.png").convert_alpha()
     tankImage2 = pygame.image.load("graphics/tank2.png").convert_alpha()
@@ -136,6 +137,26 @@ def loadImages():
     tankImage3inactive = pygame.transform.scale(tankImage3inactive, (mapBoxSize, mapBoxSize))
     tankImage4inactive = pygame.transform.scale(tankImage4inactive, (mapBoxSize, mapBoxSize))
 
+
+    global artilleryImage1, artilleryImage2, artilleryImage3, artilleryImage4
+    artilleryImage1 = pygame.image.load("graphics/artillery1.png").convert_alpha()
+    artilleryImage2 = pygame.image.load("graphics/artillery2.png").convert_alpha()
+    artilleryImage3 = pygame.image.load("graphics/artillery3.png").convert_alpha()
+    artilleryImage4 = pygame.image.load("graphics/artillery4.png").convert_alpha()
+    artilleryImage1 = pygame.transform.scale(artilleryImage1, (mapBoxSize, mapBoxSize))
+    artilleryImage2 = pygame.transform.scale(artilleryImage2, (mapBoxSize, mapBoxSize))
+    artilleryImage3 = pygame.transform.scale(artilleryImage3, (mapBoxSize, mapBoxSize))
+    artilleryImage4 = pygame.transform.scale(artilleryImage4, (mapBoxSize, mapBoxSize))
+
+    global artilleryImage1inactive, artilleryImage2inactive, artilleryImage3inactive, artilleryImage4inactive
+    artilleryImage1inactive = pygame.image.load("graphics/artillery1inactive.png").convert_alpha()
+    artilleryImage2inactive = pygame.image.load("graphics/artillery2inactive.png").convert_alpha()
+    artilleryImage3inactive = pygame.image.load("graphics/artillery3inactive.png").convert_alpha()
+    artilleryImage4inactive = pygame.image.load("graphics/artillery4inactive.png").convert_alpha()
+    artilleryImage1inactive = pygame.transform.scale(artilleryImage1inactive, (mapBoxSize, mapBoxSize))
+    artilleryImage2inactive = pygame.transform.scale(artilleryImage2inactive, (mapBoxSize, mapBoxSize))
+    artilleryImage3inactive = pygame.transform.scale(artilleryImage3inactive, (mapBoxSize, mapBoxSize))
+    artilleryImage4inactive = pygame.transform.scale(artilleryImage4inactive, (mapBoxSize, mapBoxSize))
 
 
 def checkEvents():
@@ -266,6 +287,8 @@ def draw():
     global infantryImage1inactive, infantryImage2inactive, infantryImage3inactive, infantryImage4inactive
     global tankImage1, tankImage2, tankImage3, tankImage4
     global tankImage1inactive, tankImage2inactive, tankImage3inactive, tankImage4inactive
+    global artilleryImage1, artilleryImage2, artilleryImage3, artilleryImage4
+    global artilleryImage1inactive, artilleryImage2inactive, artilleryImage3inactive, artilleryImage4inactive
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]
@@ -396,7 +419,7 @@ def generateSelectedUnitRadar():
 
 def generateSelectedUnitOptions(x, y):
     global gameMap, mapHeight, mapWidth, selectedUnitOptions, selectedUnitAttacks
-    if gameMap[y][x]['unit'].range == 1: #if units range is only 1
+    if gameMap[y][x]['unit'].rangeMax == 1: #if units range is only 1
         selectedUnitOptions = []
         if x + 1 <= mapWidth - 1:
             if gameMap[y][x + 1]['unit'] != None:

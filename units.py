@@ -41,7 +41,8 @@ class Infantry(GroundUnit):
         self.firePower = 1
         self.defensePower = 1
         self.moveAbility = 3
-        self.range = 1
+        self.rangeMin = 1
+        self.rangeMax = 1
 
 
 class Tank(GroundUnit):
@@ -53,5 +54,19 @@ class Tank(GroundUnit):
         self.firePower = 2
         self.defensePower = 3
         self.moveAbility = 5
-        self.range = 1
+        self.rangeMin = 1
+        self.rangeMax = 1
+
+
+class Artillery(GroundUnit):
+    def __init__(self, team, hp):
+        super(Artillery, self).__init__(team)
+        self.unitType = "Artillery"
+        self.hp = hp
+        self.hpMax = 10
+        self.firePower = 2
+        self.defensePower = 3
+        self.moveAbility = 3
+        self.rangeMin = 1
+        self.rangeMax = 3
         

@@ -47,7 +47,7 @@ plain.city.Infantry.1.10
 plain.city.Infantry.1.10
 plain.city.Infantry.1.10
 plain
-plain.city.Infantry.1.10
+plain.city.Artillery.1.10
 sea
 sea
 sea

@@ -382,54 +382,16 @@ def f7(seq):
 
 
 def generateSelectedUnitRadar():
-    global selectedUnit, gameMap, selectedUnitRadar
-    selectedUnitRadar = None
-    if selectedUnit != None:
-        y, x = selectedUnit
-        unit = gameMap[y][x]["unit"]
-        dim = unit.moveAbility * 2 + 3
-        grid = []
-        for a in range(dim):
-            grid.append([])
-            for b in range(dim):
-                if a == unit.moveAbility + 1 and b == unit.moveAbility + 1:
-                    grid[a].append("su")
-                elif calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) > unit.moveAbility + 1:
-                    grid[a].append("0")
-                elif calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) > unit.moveAbility:
-                    grid[a].append("-")
-                else:
-                    grid[a].append(None)
-        for a in range(dim):
-            for b in range(dim):
-                if a == unit.moveAbility + 1 and b == unit.moveAbility + 1:
-                    grid[a][b] = "su"
-                elif calculateMoveDistance(b, a, unit.moveAbility + 1, unit.moveAbility + 1) <= unit.moveAbility + 1:
-                    thing = None
-                    try:
-                        j = y - (unit.moveAbility + 1) + a
-                        k = x - (unit.moveAbility + 1) + b
-                        if j < 0 or k < 0:
-                            grid[a][b] = "X"
-                        else:
-                            thing = gameMap[j][k]
-                            grid[a][b] = thing
-                    except:
-                        pass
+    # Which squares need to appear selected? We need to tell the draw function
+    global highlightedSquares
+    highlightedSquares = []
 
-        # for a in range(dim):el
-        #     print grid[a]
-
-        selectedUnitRadar = grid
-        # Which squares need to appear selected? We need to tell the draw function
-        global highlightedSquares
-        highlightedSquares = []
-
-        global ox, oy
-        oy, ox = selectedUnit
-        findAvailableMoves(x, y, unit.moveAbility, x, y)
-        highlightedSquares.append((oy, ox))
-        highlightedSquares = f7(highlightedSquares)
+    global ox, oy
+    oy, ox = selectedUnit
+    unit = gameMap[oy][ox]["unit"]
+    findAvailableMoves(ox, oy, unit.moveAbility, ox, oy)
+    highlightedSquares.append((oy, ox))
+    highlightedSquares = f7(highlightedSquares)
 
 
 def generateSelectedUnitOptions(x, y):
@@ -492,9 +454,10 @@ def mouseWasClicked(mousePos, button):
                     # Unit has been selected.  Set selectedUnit variable so draw function will draw available moves
                     selectedUnit = (mapY, mapX)
                     generateSelectedUnitRadar()
-        else:
+        else: # A unit has already been selected
             y, x = selectedUnit
             if calculateMoveDistance(mapX, mapY, x, y) <= gameMap[y][x]["unit"].moveAbility and (gameMap[mapY][mapX]['unit'] == None or (mapX == x and mapY == y)):
+                # The square the user clicked on is a valid move so move unit and give available options
                 moveSelectedUnit(mapX, mapY)
                 selectedUnitMap = (mapX, mapY)
                 menuOn = True
@@ -507,7 +470,6 @@ def mouseWasClicked(mousePos, button):
                 # which options does the unit have?
                 generateSelectedUnitOptions(mapX, mapY)
                 global selectedUnitOptions
-                print selectedUnitOptions
                 # drawOptions = [[Rect Height, Rect Width, Rect Center], for each option - [Option Text, Option Position]]
                 width = 100
                 height = 75 + (50 * len(selectedUnitOptions))
@@ -527,9 +489,11 @@ def mouseWasClicked(mousePos, button):
                         xxx = xx - width
                         yyy = yy - ((i + 1) * 50) - 25
                         drawOptions.append([selectedUnitOptions[i], (xxx, yyy)])
+                # Unit was moved so clear highlightedSquares variable
                 highlightedSquares = []
+                # checkedSquares needs to be cleared because it is vital to calculating highlightedSquares
                 checkedSquares = []
-            else:   
+            else: # The square the user clicked on is not a valid move so the unit is no longer selected and will not be moved anywhere
                 selectedUnit = None
                 highlightedSquares = []
                 checkedSquares = []
@@ -571,7 +535,7 @@ def mouseWasClicked(mousePos, button):
         highlightedSquares = []
         checkedSquares = []
         selectedUnitAttacks = []
-    else:
+    else: # Menu is currently on
         y, x = selectedUnit
         xmap, ymap = selectedUnitMap
         mouseX, mouseY = mousePos

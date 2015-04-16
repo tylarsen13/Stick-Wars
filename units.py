@@ -64,7 +64,7 @@ class Artillery(GroundUnit):
         self.unitType = "Artillery"
         self.hp = hp
         self.hpMax = 10
-        self.firePower = 2
+        self.firePower = 1.75
         self.defensePower = 3
         self.moveAbility = 3
         self.rangeMin = 1

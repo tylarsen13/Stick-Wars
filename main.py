@@ -445,9 +445,18 @@ def generateSelectedUnitOptions(x, y):
                     selectedUnitAttacks.append((x, y - 1))
                     if "attack" not in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
-        selectedUnitOptions.append("wait")
     else: #if units have a range more than 1
-        pass
+        maximum = gameMap[y][x]['unit'].rangeMax
+        minimum = gameMap[y][x]['unit'].rangeMin
+        for yy in range(mapHeight):
+            for xx in range(mapWidth):
+                if calculateMoveDistance(x, y, xx, yy) >= minimum and calculateMoveDistance(x, y, xx, yy) <= maximum:
+                    if gameMap[yy][xx]['unit'] != None:
+                        if gameMap[yy][xx]['unit'].team != gameMap[y][x]['unit'].team:
+                            selectedUnitAttacks.append((xx, yy))
+                            if "attack" not in selectedUnitOptions:
+                                selectedUnitOptions.append("attack")
+    selectedUnitOptions.append("wait")
 
 
 def moveSelectedUnit(mapX, mapY):
@@ -460,10 +469,10 @@ def moveSelectedUnit(mapX, mapY):
     
 def mouseWasClicked(mousePos, button):
     global menuOn, drawOptions, selectedUnit, selectedUnitMap, menuCorner, selectedUnitAttacks, attackOn
+    global scrollOffsetX, scrollOffsetY
+    global mapBoxSize, gameMap, windowDimensions
     if not menuOn:
         # Calculate Where the User Clicked on the Map
-        global scrollOffsetX, scrollOffsetY
-        global mapBoxSize, gameMap, windowDimensions
         x, y = mousePos
         x += scrollOffsetX
         y += scrollOffsetY
@@ -521,8 +530,6 @@ def mouseWasClicked(mousePos, button):
                 highlightedSquares = []
                 checkedSquares = []
     elif attackOn:
-        global scrollOffsetX, scrollOffsetY
-        global mapBoxSize, gameMap, windowDimensions
         x, y = mousePos
         x += scrollOffsetX
         y += scrollOffsetY

@@ -419,8 +419,8 @@ def generateSelectedUnitRadar():
 
 def generateSelectedUnitOptions(x, y):
     global gameMap, mapHeight, mapWidth, selectedUnitOptions, selectedUnitAttacks
+    selectedUnitOptions = []
     if gameMap[y][x]['unit'].rangeMax == 1: #if units range is only 1
-        selectedUnitOptions = []
         if x + 1 <= mapWidth - 1:
             if gameMap[y][x + 1]['unit'] != None:
                 if gameMap[y][x + 1]['unit'].team != gameMap[y][x]['unit'].team:
@@ -488,7 +488,7 @@ def mouseWasClicked(mousePos, button):
                     generateSelectedUnitRadar()
         else: # A unit has already been selected
             y, x = selectedUnit
-            if calculateMoveDistance(mapX, mapY, x, y) <= gameMap[y][x]["unit"].moveAbility and (gameMap[mapY][mapX]['unit'] == None or (mapX == x and mapY == y)):
+            if (mapY, mapX) in highlightedSquares and (gameMap[mapY][mapX]['unit'] == None or (mapX == x and mapY == y)):
                 # The square the user clicked on is a valid move so move unit and give available options
                 moveSelectedUnit(mapX, mapY)
                 selectedUnitMap = (mapX, mapY)

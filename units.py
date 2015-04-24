@@ -14,6 +14,7 @@ class GroundUnit(Unit):
         super(GroundUnit, self).__init__(team)
         self.unitClass = "GroundUnit"
         self.active = True
+        self.validTerrain = ['plain']
 
     def normalizeHP(self):
         self.hp = math.ceil(self.hp*10)/10

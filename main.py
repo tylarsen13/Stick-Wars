@@ -349,6 +349,15 @@ def draw():
             s.fill((255, 0, 0, 128))                         # notice the alpha value in the color
             mainWindow.blit(s, (x * mapBoxSize - scrollOffsetX, y * mapBoxSize - scrollOffsetY))
 
+
+def isTerrainValid(x, y):
+    global ox, oy, gameMap
+    if gameMap[y][x]['terrain'] in gameMap[oy][ox]['unit'].validTerrain:
+        return True
+    else:
+        return False
+
+
 def checkPrev(x, y, prevX, prevY):
     if x == prevX and y == prevY:
         return False
@@ -365,8 +374,9 @@ def findAvailableMoves(x, y, moveAbility, prevX, prevY):
                 checkedSquares.append((x + 1, y))
                 if checkPrev(x + 1, y, prevX, prevY):
                     if gameMap[y][x + 1]['unit'] == None:
-                        highlightedSquares.append((y, x + 1))
-                        findAvailableMoves(x + 1, y, moveAbility, x, y)
+                        if isTerrainValid(x + 1, y):
+                            highlightedSquares.append((y, x + 1))
+                            findAvailableMoves(x + 1, y, moveAbility, x, y)
                     elif gameMap[oy][ox]['unit'].team == gameMap[y][x + 1]['unit'].team:
                         findAvailableMoves(x + 1, y, moveAbility, x, y)
         if x - 1 >= 0:
@@ -374,8 +384,9 @@ def findAvailableMoves(x, y, moveAbility, prevX, prevY):
                 checkedSquares.append((x - 1, y))
                 if checkPrev(x - 1, y, prevX, prevY):
                     if gameMap[y][x - 1]['unit'] == None:
-                        highlightedSquares.append((y, x - 1))
-                        findAvailableMoves(x - 1, y, moveAbility, x, y)
+                        if isTerrainValid(x - 1, y):
+                            highlightedSquares.append((y, x - 1))
+                            findAvailableMoves(x - 1, y, moveAbility, x, y)
                     elif gameMap[oy][ox]['unit'].team == gameMap[y][x - 1]['unit'].team:
                         findAvailableMoves(x - 1, y, moveAbility, x, y)
         if y + 1 <= mapHeight - 1:
@@ -383,8 +394,9 @@ def findAvailableMoves(x, y, moveAbility, prevX, prevY):
                 checkedSquares.append((x, y + 1))
                 if checkPrev(x, y + 1, prevX, prevY):
                     if gameMap[y + 1][x]['unit'] == None:
-                        highlightedSquares.append((y + 1, x))
-                        findAvailableMoves(x, y + 1, moveAbility, x, y)
+                        if isTerrainValid(x, y + 1):
+                            highlightedSquares.append((y + 1, x))
+                            findAvailableMoves(x, y + 1, moveAbility, x, y)
                     elif gameMap[oy][ox]['unit'].team == gameMap[y + 1][x]['unit'].team:
                         findAvailableMoves(x, y + 1, moveAbility, x, y)
         if y - 1 >= 0:
@@ -392,8 +404,9 @@ def findAvailableMoves(x, y, moveAbility, prevX, prevY):
                 checkedSquares.append((x, y - 1))
                 if checkPrev(x, y - 1, prevX, prevY):
                     if gameMap[y - 1][x]['unit'] == None:
-                        highlightedSquares.append((y - 1, x))
-                        findAvailableMoves(x, y - 1, moveAbility, x, y)
+                        if isTerrainValid(x, y - 1):
+                            highlightedSquares.append((y - 1, x))
+                            findAvailableMoves(x, y - 1, moveAbility, x, y)
                     elif gameMap[oy][ox]['unit'].team == gameMap[y - 1][x]['unit'].team:
                         findAvailableMoves(x, y - 1, moveAbility, x, y)
 

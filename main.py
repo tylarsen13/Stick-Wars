@@ -514,6 +514,9 @@ def mouseWasClicked(mousePos, button):
         # Calculate which grid square they clicked on
         mapX = x // mapBoxSize
         mapY = y // mapBoxSize
+        # Make sure they clicked on the map
+        if not mapX <= mapWidth - 1 or not mapY <= mapHeight- 1:
+            return 
         global highlightedSquares, checkedSquares
         if selectedUnit == None:
             if gameMap[mapY][mapX]["unit"] != None and gameMap[mapY][mapX]["unit"].active:

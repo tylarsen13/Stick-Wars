@@ -8,14 +8,6 @@ class Unit(object):
     def move(self):
         pass
 
-
-class GroundUnit(Unit):
-    def __init__(self, team):
-        super(GroundUnit, self).__init__(team)
-        self.unitClass = "GroundUnit"
-        self.active = True
-        self.validTerrain = ['plain']
-
     def normalizeHP(self):
         self.hp = math.ceil(self.hp*10)/10
 
@@ -31,6 +23,14 @@ class GroundUnit(Unit):
             self.hp -= (unit.firePower * unitRoundedHP) / (self.defensePower * 1.5)
         self.normalizeHP()
         unit.normalizeHP()
+
+
+class GroundUnit(Unit):
+    def __init__(self, team):
+        super(GroundUnit, self).__init__(team)
+        self.unitClass = "GroundUnit"
+        self.active = True
+        self.validTerrain = ['plain']
 
 
 class Infantry(GroundUnit):
@@ -71,3 +71,23 @@ class Artillery(GroundUnit):
         self.rangeMin = 1
         self.rangeMax = 3
         
+
+class AirUnit(Unit):
+    def __init__(self, team):
+        super(AirUnit, self).__init__(team)
+        self.unitClass = "AirUnit"
+        self.active = True
+        self.validTerrain = ['plain', 'sea']
+
+
+class Fighter(AirUnit):
+    def __init__(self, team, hp):
+        super(Infantry, self).__init__(team)
+        self.unitType = "Fighter"
+        self.hp = hp
+        self.hpMax = 10
+        self.firePower = 5
+        self.defensePower = 1
+        self.moveAbility = 7
+        self.rangeMin = 1
+        self.rangeMax = 1

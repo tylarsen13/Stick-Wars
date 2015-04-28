@@ -3,7 +3,7 @@ import sys
 from constants import *
 import math
 
-from units import Infantry, Tank, Artillery
+from units import Infantry, Tank, Artillery, Fighter
 
 
 def initGame():
@@ -158,6 +158,26 @@ def loadImages():
     artilleryImage3inactive = pygame.transform.scale(artilleryImage3inactive, (mapBoxSize, mapBoxSize))
     artilleryImage4inactive = pygame.transform.scale(artilleryImage4inactive, (mapBoxSize, mapBoxSize))
 
+    global fighterImage1, fighterImage2, fighterImage3, fighterImage4
+    fighterImage1 = pygame.image.load("graphics/fighter1.png").convert_alpha()
+    fighterImage2 = pygame.image.load("graphics/fighter2.png").convert_alpha()
+    fighterImage3 = pygame.image.load("graphics/fighter3.png").convert_alpha()
+    fighterImage4 = pygame.image.load("graphics/fighter4.png").convert_alpha()
+    fighterImage1 = pygame.transform.scale(fighterImage1, (mapBoxSize, mapBoxSize))
+    fighterImage2 = pygame.transform.scale(fighterImage2, (mapBoxSize, mapBoxSize))
+    fighterImage3 = pygame.transform.scale(fighterImage3, (mapBoxSize, mapBoxSize))
+    fighterImage4 = pygame.transform.scale(fighterImage4, (mapBoxSize, mapBoxSize))
+
+    global fighterImage1inactive, fighterImage2inactive, fighterImage3inactive, fighterImage4inactive
+    fighterImage1inactive = pygame.image.load("graphics/fighter1inactive.png").convert_alpha()
+    fighterImage2inactive = pygame.image.load("graphics/fighter2inactive.png").convert_alpha()
+    fighterImage3inactive = pygame.image.load("graphics/fighter3inactive.png").convert_alpha()
+    fighterImage4inactive = pygame.image.load("graphics/fighter4inactive.png").convert_alpha()
+    fighterImage1inactive = pygame.transform.scale(fighterImage1inactive, (mapBoxSize, mapBoxSize))
+    fighterImage2inactive = pygame.transform.scale(fighterImage2inactive, (mapBoxSize, mapBoxSize))
+    fighterImage3inactive = pygame.transform.scale(fighterImage3inactive, (mapBoxSize, mapBoxSize))
+    fighterImage4inactive = pygame.transform.scale(fighterImage4inactive, (mapBoxSize, mapBoxSize))
+
 
 def checkEvents():
     global scrollOffsetX, scrollOffsetY, windowDimensions
@@ -289,6 +309,8 @@ def draw():
     global tankImage1inactive, tankImage2inactive, tankImage3inactive, tankImage4inactive
     global artilleryImage1, artilleryImage2, artilleryImage3, artilleryImage4
     global artilleryImage1inactive, artilleryImage2inactive, artilleryImage3inactive, artilleryImage4inactive
+    global fighterImage1, fighterImage2, fighterImage3, fighterImage4
+    global fighterImage1inactive, fighterImage2inactive, fighterImage3inactive, fighterImage4inactive
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]

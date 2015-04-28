@@ -82,7 +82,7 @@ class AirUnit(Unit):
 
 class Fighter(AirUnit):
     def __init__(self, team, hp):
-        super(Infantry, self).__init__(team)
+        super(Fighter, self).__init__(team)
         self.unitType = "Fighter"
         self.hp = hp
         self.hpMax = 10

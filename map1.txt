@@ -61,7 +61,7 @@ plain
 plain
 plain
 plain.city.Artillery.2.10
-plain
+plain.city.Fighter.1.10
 plain
 plain
 plain

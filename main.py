@@ -467,25 +467,25 @@ def generateSelectedUnitOptions(x, y):
     if gameMap[y][x]['unit'].rangeMax == 1: #if units range is only 1
         if x + 1 <= mapWidth - 1:
             if gameMap[y][x + 1]['unit'] != None:
-                if gameMap[y][x + 1]['unit'].team != gameMap[y][x]['unit'].team:
+                if gameMap[y][x + 1]['unit'].team != gameMap[y][x]['unit'].team and gameMap[y][x + 1]['unit'].unitClass in gameMap[y][x]['unit'].validAttacks:
                     selectedUnitAttacks.append((x + 1, y))
                     if not "attack" in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
         if x - 1 >= 0:
             if gameMap[y][x - 1]['unit'] != None:
-                if gameMap[y][x - 1]['unit'].team != gameMap[y][x]['unit'].team:
+                if gameMap[y][x - 1]['unit'].team != gameMap[y][x]['unit'].team and gameMap[y][x - 1]['unit'].unitClass in gameMap[y][x]['unit'].validAttacks:
                     selectedUnitAttacks.append((x - 1, y))
                     if "attack" not in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
         if y + 1 <= mapHeight - 1:
             if gameMap[y + 1][x]['unit'] != None:
-                if gameMap[y + 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                if gameMap[y + 1][x]['unit'].team != gameMap[y][x]['unit'].team and gameMap[y + 1][x]['unit'].unitClass in gameMap[y][x]['unit'].validAttacks:
                     selectedUnitAttacks.append((x, y + 1))
                     if "attack" not in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
         if y - 1 >= 0:
             if gameMap[y - 1][x]['unit'] != None:
-                if gameMap[y - 1][x]['unit'].team != gameMap[y][x]['unit'].team:
+                if gameMap[y - 1][x]['unit'].team != gameMap[y][x]['unit'].team and gameMap[y - 1][x]['unit'].unitClass in gameMap[y][x]['unit'].validAttacks:
                     selectedUnitAttacks.append((x, y - 1))
                     if "attack" not in selectedUnitOptions:
                         selectedUnitOptions.append("attack")
@@ -496,7 +496,7 @@ def generateSelectedUnitOptions(x, y):
             for xx in range(mapWidth):
                 if calculateMoveDistance(x, y, xx, yy) >= minimum and calculateMoveDistance(x, y, xx, yy) <= maximum:
                     if gameMap[yy][xx]['unit'] != None:
-                        if gameMap[yy][xx]['unit'].team != gameMap[y][x]['unit'].team:
+                        if gameMap[yy][xx]['unit'].team != gameMap[y][x]['unit'].team and gameMap[yy][xx]['unit'].unitClass in gameMap[y][x]['unit'].validAttacks:
                             selectedUnitAttacks.append((xx, yy))
                             if "attack" not in selectedUnitOptions:
                                 selectedUnitOptions.append("attack")

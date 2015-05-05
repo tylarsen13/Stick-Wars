@@ -31,6 +31,7 @@ class GroundUnit(Unit):
         self.unitClass = "GroundUnit"
         self.active = True
         self.validTerrain = ['plain']
+        self.validAttacks = ["GroundUnit"]
 
 
 class Infantry(GroundUnit):
@@ -78,6 +79,7 @@ class AirUnit(Unit):
         self.unitClass = "AirUnit"
         self.active = True
         self.validTerrain = ['plain', 'sea']
+        self.validAttacks = ["AirUnit"]
 
 
 class Fighter(AirUnit):

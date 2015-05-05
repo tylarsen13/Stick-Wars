@@ -89,6 +89,8 @@ def initGame():
     selectedUnitAttacks = []
     global attackOn
     attackOn = False
+    global turn
+    turn = 1
 
     # for a in gameMap:
     #     for b in a:
@@ -180,7 +182,7 @@ def loadImages():
 
 
 def checkEvents():
-    global scrollOffsetX, scrollOffsetY, windowDimensions
+    global scrollOffsetX, scrollOffsetY, windowDimensions, turn
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -191,6 +193,13 @@ def checkEvents():
                     pygame.display.set_mode(windowDimensions, pygame.DOUBLEBUF | pygame.RESIZABLE)
                 else:
                     pygame.display.set_mode(windowDimensions, pygame.FULLSCREEN | pygame.DOUBLEBUF)
+            elif event.key == pygame.K_e:
+                # End turn
+                reactivateUnits()
+                if turn == 1:
+                    turn = 2
+                else:
+                    turn = 1
             elif event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             elif event.key == pygame.K_LEFT:
@@ -501,9 +510,18 @@ def moveSelectedUnit(mapX, mapY):
     gameMap[y][x]['unit'] = None
     gameMap[mapY][mapX]['unit'] = unit
 
+
+def reactivateUnits():
+    global gameMap
+    for row in gameMap:
+        for column in row:
+            if column["unit"] != None:
+                if not column["unit"].active:
+                    column["unit"].active = True
+
     
 def mouseWasClicked(mousePos, button):
-    global menuOn, drawOptions, selectedUnit, selectedUnitMap, menuCorner, selectedUnitAttacks, attackOn
+    global menuOn, drawOptions, selectedUnit, selectedUnitMap, menuCorner, selectedUnitAttacks, attackOn, turn
     global scrollOffsetX, scrollOffsetY
     global mapBoxSize, gameMap, windowDimensions
     if not menuOn:
@@ -515,15 +533,16 @@ def mouseWasClicked(mousePos, button):
         mapX = x // mapBoxSize
         mapY = y // mapBoxSize
         # Make sure they clicked on the map
-        if not mapX <= mapWidth - 1 or not mapY <= mapHeight- 1:
+        if not mapX <= mapWidth - 1 or not mapY <= mapHeight - 1:
             return 
         global highlightedSquares, checkedSquares
         if selectedUnit == None:
             if gameMap[mapY][mapX]["unit"] != None and gameMap[mapY][mapX]["unit"].active:
-                if button == 1:
-                    # Unit has been selected.  Set selectedUnit variable so draw function will draw available moves
-                    selectedUnit = (mapY, mapX)
-                    generateSelectedUnitRadar()
+                if gameMap[mapY][mapX]["unit"].team == turn:
+                    if button == 1:
+                        # Unit has been selected.  Set selectedUnit variable so draw function will draw available moves
+                        selectedUnit = (mapY, mapX)
+                        generateSelectedUnitRadar()
         else: # A unit has already been selected
             y, x = selectedUnit
             if (mapY, mapX) in highlightedSquares and (gameMap[mapY][mapX]['unit'] == None or (mapX == x and mapY == y)):

@@ -19,7 +19,7 @@ plain.city.Infantry.2.10
 plain.city.Infantry.1.10
 plain
 plain
-plain
+plain.city.Infantry.2.10
 plain
 plain
 sea
@@ -34,7 +34,7 @@ plain.city.Infantry.2.10
 plain.city.Tank.1.10
 plain
 plain
-plain
+plain.city.Infantry.2.10
 plain
 plain
 sea

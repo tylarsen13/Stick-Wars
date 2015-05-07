@@ -3,7 +3,7 @@ import sys
 from constants import *
 import math
 
-from units import Infantry, Tank, Artillery, Fighter
+from units import Infantry, Tank, Artillery, Fighter, Missiles, AquaticTransport
 
 
 def initGame():
@@ -180,6 +180,26 @@ def loadImages():
     fighterImage3inactive = pygame.transform.scale(fighterImage3inactive, (mapBoxSize, mapBoxSize))
     fighterImage4inactive = pygame.transform.scale(fighterImage4inactive, (mapBoxSize, mapBoxSize))
 
+    global aquatictransportImage1, aquatictransportImage2, aquatictransportImage3, aquatictransportImage4
+    aquatictransportImage1 = pygame.image.load("graphics/aquatictransport1.png").convert_alpha()
+    aquatictransportImage2 = pygame.image.load("graphics/aquatictransport2.png").convert_alpha()
+    aquatictransportImage3 = pygame.image.load("graphics/aquatictransport3.png").convert_alpha()
+    aquatictransportImage4 = pygame.image.load("graphics/aquatictransport4.png").convert_alpha()
+    aquatictransportImage1 = pygame.transform.scale(aquatictransportImage1, (mapBoxSize, mapBoxSize))
+    aquatictransportImage2 = pygame.transform.scale(aquatictransportImage2, (mapBoxSize, mapBoxSize))
+    aquatictransportImage3 = pygame.transform.scale(aquatictransportImage3, (mapBoxSize, mapBoxSize))
+    aquatictransportImage4 = pygame.transform.scale(aquatictransportImage4, (mapBoxSize, mapBoxSize))
+
+    global aquatictransportImage1inactive, aquatictransportImage2inactive, aquatictransportImage3inactive, aquatictransportImage4inactive
+    aquatictransportImage1inactive = pygame.image.load("graphics/aquatictransport1inactive.png").convert_alpha()
+    aquatictransportImage2inactive = pygame.image.load("graphics/aquatictransport2inactive.png").convert_alpha()
+    aquatictransportImage3inactive = pygame.image.load("graphics/aquatictransport3inactive.png").convert_alpha()
+    aquatictransportImage4inactive = pygame.image.load("graphics/aquatictransport4inactive.png").convert_alpha()
+    aquatictransportImage1inactive = pygame.transform.scale(aquatictransportImage1inactive, (mapBoxSize, mapBoxSize))
+    aquatictransportImage2inactive = pygame.transform.scale(aquatictransportImage2inactive, (mapBoxSize, mapBoxSize))
+    aquatictransportImage3inactive = pygame.transform.scale(aquatictransportImage3inactive, (mapBoxSize, mapBoxSize))
+    aquatictransportImage4inactive = pygame.transform.scale(aquatictransportImage4inactive, (mapBoxSize, mapBoxSize))
+
 
 def checkEvents():
     global scrollOffsetX, scrollOffsetY, windowDimensions, turn
@@ -320,6 +340,8 @@ def draw():
     global artilleryImage1inactive, artilleryImage2inactive, artilleryImage3inactive, artilleryImage4inactive
     global fighterImage1, fighterImage2, fighterImage3, fighterImage4
     global fighterImage1inactive, fighterImage2inactive, fighterImage3inactive, fighterImage4inactive
+    global aquatictransportImage1, aquatictransportImage2, aquatictransportImage3, aquatictransportImage4
+    global aquatictransportImage1inactive, aquatictransportImage2inactive, aquatictransportImage3inactive, aquatictransportImage4inactive
     for i in range(mapHeight):
         for j in range(mapWidth):
             t = gameMap[i][j]["terrain"]

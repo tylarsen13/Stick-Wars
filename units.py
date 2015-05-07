@@ -71,6 +71,20 @@ class Artillery(GroundUnit):
         self.moveAbility = 3
         self.rangeMin = 1
         self.rangeMax = 3
+
+
+class Missiles(GroundUnit):
+    def __init__(self, team, hp):
+        super(Artillery, self).__init__(team)
+        self.unitType = "Missiles"
+        self.hp = hp
+        self.hpMax = 10
+        self.firePower = 1.75
+        self.defensePower = 3
+        self.moveAbility = 3
+        self.rangeMin = 2
+        self.rangeMax = 5
+        self.validAttacks = ["AirUnit"]
         
 
 class AirUnit(Unit):
@@ -91,5 +105,27 @@ class Fighter(AirUnit):
         self.firePower = 5
         self.defensePower = 1
         self.moveAbility = 7
+        self.rangeMin = 1
+        self.rangeMax = 1
+
+
+class SeaUnit(Unit):
+    def __init__(self, team):
+        super(SeaUnit, self).__init__(team)
+        self.unitClass = "SeaUnit"
+        self.active = True
+        self.validTerrain = ['sea']
+        self.validAttacks = []
+
+
+class AquaticTransport(SeaUnit):
+    def __init__(self, team, hp):
+        super(AquaticTransport, self).__init__(team)
+        self.unitType = "AquaticTransport"
+        self.hp = hp
+        self.hpMax = 10
+        self.firePower = 0
+        self.defensePower = 3
+        self.moveAbility = 5
         self.rangeMin = 1
         self.rangeMax = 1
